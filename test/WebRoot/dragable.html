@@ -1,0 +1,83 @@
+<html>
+<head>
+<base href="<%=basePath%>">
+
+<title>My JSP 'MyJsp.jsp' starting page</title>
+<meta charset="gb2312">
+<script type="text/javascript" src="js/jquery-2.1.3.js"></script>
+<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	-->
+<script type="text/javascript">
+	function _getScreen() {
+		var s = {};
+		if (window.innerWidth) {
+			s.width = window.innerWidth;
+			s.height = window.innerHeight;
+		} else {//IE  
+			s.width = document.documentElement.clientWidth;
+			s.height = document.documentElement.clientHeight;
+		}
+		return s;
+	}
+	function _dragable(ele) {
+		ele.onmousedown = function(e) {
+			e = e || window.event;
+			//首先阻止事件传播导致浏览器的默认行为  
+			if (e.preventDefault) {//非IE  
+				e.preventDefault();
+			} else {//IE  
+				e.returnValue = false;
+			}
+			var _this = ele;
+			var old_mouse_x = e.clientX;//鼠标最初的X坐标  
+			var old_mouse_y = e.clientY;//鼠标最初的Y坐标  
+			var old_ele_x = _this.offsetLeft;//元素最初的X坐标  
+			var old_ele_y = _this.offsetTop;//元素最初的Y坐标  
+			if (_this.setCapture) {
+				_this.setCapture();
+			}
+			document.onmousemove = function(e) {
+				e = e || window.event;
+				var new_mouse_x = e.clientX;//鼠标当前X坐标  
+				var new_mouse_y = e.clientY;//鼠标当前Y坐标  
+				var new_ele_x = (old_ele_x + new_mouse_x - old_mouse_x);//元素当前X坐标  
+				var new_ele_y = (old_ele_y + new_mouse_y - old_mouse_y);//元素当前Y坐标  
+				if (new_ele_x < 0) {
+					new_ele_x = 0;
+				}
+				if (new_ele_y < 0) {
+					new_ele_y = 0;
+				}
+				if (new_ele_x > (_getScreen().width - _this.offsetWidth)) {
+					new_ele_x = (_getScreen() - _this.offsetWidth);
+				}
+				if (new_ele_y > (_getScreen().height - _this.offsetHeight)) {
+					new_ele_y = (_getScreen().height - _this.offsetHeight);
+				}
+				_this.style.left = new_ele_x + 'px';
+				_this.style.top = new_ele_y + 'px';
+			}
+			document.onmouseup = function(e) {
+				e = e || window.event;
+				this.onmousemove = null;
+				this.onmouseup = null;
+				if (_this.releaseCapture) {
+					_this.releaseCapture();
+				}
+			}
+		}
+	}
+
+	$(function(){ 
+		_dragable(document.getElementById("_drag"));
+	});
+</script>
+</head>
+
+<body>
+	<div id="_drag"
+		style="background-color: #ddd;width:350px;height:250px;border:1px solid black;z-index: 100;cursor: move;position:absolute;">
+		这是一个可拖拽的div</div>
+</body>
+</html>

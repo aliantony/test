@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+   "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+   "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.objectFactory" value="spring" />
+	<constant name="struts.i18n.encoding" value="gbk" />
+	<constant name="struts.multipart.maxSize" value="209715200" />
+	<!-- 文件上传临时文件保存路径 -->
+	<constant name="struts.multipart.saveDir" value="d:\"></constant>
+	<bean type="org.apache.struts2.dispatcher.multipart.MultiPartRequest"
+		name="myRequestParser" class="com.upload.MyRequestParseWrapper" scope="default" />
+	<!-- 改成自己定义的文件上传方式 -->
+	<constant name="struts.multipart.handler" value="myRequestParser" />
+
+
+	<package name="upload" extends="struts-default">
+		<action name="uploadFile" class="uploadFileAction" method="uploadFile">
+		</action>
+	</package>
+	<package name="struts" extends="struts-default" namespace="/">
+		<action name="progress" class="com.upload.FileAction" method="progress">
+			<result>/file_box_upload.jsp</result>
+		</action>
+		<action name="uploadfile" class="com.upload.FileAction" method="uploadfile">
+			<result>/file_box_upload.jsp</result>
+		</action>
+	</package>
+</struts>

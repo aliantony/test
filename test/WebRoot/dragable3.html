@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+<title></title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<script language=javascript>
+	//  var onmousedrag = new Object();
+	//  var onmousedrag = function(){};
+	/**
+	 * 处理拖动事件的类,封装了拖动过程发生的事件的处理函数
+	 * @param {Object} e
+	 */
+	var Onmousedrag = {
+		mousedownflag : 0,
+		x : 0,
+		y : 0,
+		mousedown : function(e) {
+			//   alert("a");
+			this.mousedownflag = 1;
+			this.x = e.offsetX ? e.offsetX : e.layerX;
+			this.y = e.offsetY ? e.offsetY : e.layerY;
+			
+		},
+		mousemove : function(e) {
+			if (this.mousedownflag) {
+				//   alert(flag);
+				//移动的距离
+				var movey = (e.offsetY ? e.offsetY : e.layerY) - this.y;
+				var movex = (e.offsetX ? e.offsetX : e.layerX) - this.x;
+				//   var scrollX = document.documentElement.scrollLeft;
+				// var scrollY = document.documentElement.scrollTop;
+
+				var obj = document.getElementById("movedivid");
+				var top = obj.style.top;
+				var left = obj.style.left;
+				obj.style.position = "absolute";
+				var xx = (movex + parseInt(left.substr(0, left.length - 2)));
+				var yy = (movey + parseInt(top.substr(0, top.length - 2)));
+				obj.style.left = xx + "px";
+				obj.style.top = yy + "px";
+			}
+		},
+		mouseup : function() {
+			this.mousedownflag = 0;
+			//alert(obj.style.width);
+		},
+		mouseout : function() {
+			this.mousedownflag = 0;
+		}
+	};
+
+	var scrollEvent = {
+		preScrollX : 0,
+		preScrollY : 0,
+		fixedFloatDiv : function() {
+			// alert('dadsa');
+			var obj = document.getElementById("movedivid");
+			var scrollX = document.documentElement.scrollLeft;
+			var scrollY = document.documentElement.scrollTop;
+
+			var top = obj.style.top;
+			var left = obj.style.left;
+			//    alert(parseInt(top.substr(0, top.length-2)));
+			obj.style.top = (parseInt(top.substr(0, top.length - 2)) + scrollY - this.preScrollY)
+					+ "px";//当前div块距离浏览器top的距离+（浏览器滚动条移动的距离=当前浏览器滚动的距离-上次浏览器滚动的距离）
+			obj.style.left = (parseInt(left.substr(0, left.length - 2))
+					+ scrollX - this.preScrollX)
+					+ "px";
+			this.preScrollY = scrollY;//保存这次浏览器滚动的y轴长度
+			this.preScrollX = scrollX;//保存这次浏览器滚动的x轴长度
+		}
+	};
+
+	/**
+	 * 兼容IE和FireFox的onscroll滚动事件
+	 */
+	window.onscroll = function() {
+		scrollEvent.fixedFloatDiv();
+
+	};
+</script>
+</head>
+<body>
+	<div id="movedivid"
+		style="z-index:9999;position: absolute; left: 245px; top:130px;width:300px;height:200px;background:#cccccc;cursor:move;"
+		onmousedown="Onmousedrag.mousedown(event);"
+		onmousemove="Onmousedrag.mousemove(event);"
+		onmouseup="Onmousedrag.mouseup();"
+		onmouseout="Onmousedrag.mouseout();">哈哈，我终于知道怎么拖动你了</div>
+	</div>
+</body>
+</html>
